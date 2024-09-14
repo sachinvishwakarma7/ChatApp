@@ -1,118 +1,79 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useEffect} from 'react';
+import RootNavigation from './src/navigation/RootNavigation';
+import {Provider} from 'react-redux';
+// import {store} from './src/redux/Store';
+import Toast from 'react-native-toast-message';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistStore} from 'redux-persist';
+import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
+import store from './src/redux/Store';
+import messaging from '@react-native-firebase/messaging';
+import RequestPermission from './src/assets/utils/RequestPermission';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+const App = () => {
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      console.log('FCM Token:', fcmToken);
+    } else {
+      console.log('Failed to get FCM token');
+    }
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+  useEffect(() => {
+    (async () => {
+      let notificationPermission = await RequestPermission('notification');
+      if (notificationPermission) {
+        getFcmToken();
+      }
+    })();
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Toast.show({
+        type: 'info', // 'success' | 'error' | 'info'
+        text1: remoteMessage?.notification?.title,
+        text2: remoteMessage?.notification?.body, // Optional message
+      }
+    );
+      console.log('remoteMessage', remoteMessage?.notification?.title);
+    });
+    return unsubscribe;
+  }, []);
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  let persistor = persistStore(store);
+  const Loading = () => {
+    return (
+      <View style={ styles.contaniner }>
+        <ActivityIndicator
+          style={styles.loadingvie}
+          size={'large'}
+          color={'black'}
+        />
+      </View>
+    );
+  };
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Loading />} persistor={persistor}>
+        <RootNavigation />
+      </PersistGate>
+    </Provider>
+  );
+};
 
 export default App;
+
+const styles = StyleSheet.create({
+  contaniner: {
+    position: 'absolute',
+    right: 0,
+    left: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: '#FFF',
+  },
+  loadingvie: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
