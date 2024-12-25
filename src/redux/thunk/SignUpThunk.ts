@@ -3,13 +3,31 @@ import auth from '@react-native-firebase/auth';
 import {Alert} from 'react-native';
 import {FirebaseError} from '@firebase/app';
 import {signupStatusAction} from '../slices/SignUpSlice';
+import firestore from '@react-native-firebase/firestore';
 
 const SignUpThunk = createAsyncThunk(
-  'auth/login',
+  'auth/SignUp',
   async (
     userData: {fullName: string; email: string; password: string},
     {getState, dispatch},
   ) => {
+    const addUserForChat = async data => {
+      try {
+        await firestore()
+          .collection('ChatUsers')
+          .doc(`${data?.uid}`) // Unique doc ID using user ID
+          .set({
+            email: userData?.email,
+            name: userData?.fullName,
+            userId: data?.uid,
+            timestamp: firestore.FieldValue.serverTimestamp(), // Firestore server timestamp
+          });
+        console.log('Chat User added!');
+      } catch (error) {
+        console.error('Error adding Chat User:', error);
+      }
+    };
+
     // Input validation
     if (!userData.fullName) {
       Alert.alert('Validation Error', 'Full Name is required.');
@@ -30,6 +48,7 @@ const SignUpThunk = createAsyncThunk(
       );
       const user = userCredential.user;
       // console.log('Signup user:', user);
+      addUserForChat(user);
       dispatch(signupStatusAction('success'));
       return user;
     } catch (error) {

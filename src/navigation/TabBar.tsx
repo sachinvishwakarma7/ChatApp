@@ -1,14 +1,60 @@
-import React from 'react';
-
-import {View, Pressable, Dimensions, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Pressable, StyleSheet, useWindowDimensions} from 'react-native';
 import NavigationIcon from './NavigationIcon';
-import {appColor} from '../assets/colors/appColor';
-
-const {width} = Dimensions.get('window');
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
+import {useTheme} from '../components/ThemeProvider';
 
 const TabBar = ({state, descriptors, navigation}: any) => {
+  const {width} = useWindowDimensions();
+  const {theme} = useTheme();
+  const tabWidth = width / state.routes.length;
+  const highlightPosition = useSharedValue(0);
+
+  useEffect(() => {
+    highlightPosition.value = state.index * tabWidth;
+  }, [state.index, tabWidth]);
+
+  const highlightStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateX: withSpring(highlightPosition.value)}],
+    };
+  });
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flexDirection: 'row',
+      position: 'absolute',
+      bottom: 0,
+      backgroundColor: theme.colors.primary,
+    },
+    highlight: {
+      position: 'absolute',
+      bottom: 20,
+      height: 44,
+      backgroundColor: theme.colors.secondary,
+      borderRadius: 25,
+    },
+    tabItemContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 20,
+    },
+  });
   return (
     <View style={styles.mainContainer}>
+      {/* Highlight Indicator */}
+      <Animated.View
+        style={[
+          styles.highlight,
+          highlightStyle,
+          {width: tabWidth * 0.8},
+          {left: tabWidth * 0.1},
+        ]}
+      />
       {state.routes.map((route: any, index: number) => {
         const {options} = descriptors[route.key];
         const label =
@@ -32,51 +78,24 @@ const TabBar = ({state, descriptors, navigation}: any) => {
         };
 
         return (
-          <View
+          <Pressable
             key={index}
-            style={[
-              styles.mainItemContainer,
-              {borderRightWidth: label == 'notes' ? 3 : 0},
-            ]}>
-            <Pressable
-              onPress={onPress}
+            onPress={onPress}
+            style={styles.tabItemContainer}>
+            <View
               style={{
-                backgroundColor: isFocused
-                  ? appColor.lightGray
-                  : appColor.white,
-                borderRadius: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+                padding: 10,
               }}>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flex: 1,
-                  padding: 10,
-                }}>
-                <NavigationIcon route={label} isFocused={isFocused} />
-              </View>
-            </Pressable>
-          </View>
+              <NavigationIcon route={label} isFocused={isFocused} />
+            </View>
+          </Pressable>
         );
       })}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 0,
-    backgroundColor: appColor.white,
-    // borderRadius: 20,
-    // marginHorizontal: width * 0.1,
-  },
-  mainItemContainer: {
-    flex: 1,
-    margin: 10,
-    paddingBottom: 10
-  },
-});
 
 export default TabBar;

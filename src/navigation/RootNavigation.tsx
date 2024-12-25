@@ -5,10 +5,10 @@ import Toast from 'react-native-toast-message';
 
 const RootNavigation = () => {
   return (
-    <NavigationContainer>
-      <AuthNavigation />
-      <Toast position="top" swipeable={false} />
-    </NavigationContainer>
+      <NavigationContainer>
+        <AuthNavigation />
+        <Toast position="top" visibilityTime={2000} swipeable={false} />
+      </NavigationContainer>
   );
 };
 

@@ -1,8 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {appColor} from '../assets/colors/appColor';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {HomeIcon, ProfileIcon, SettingIcon} from '../assets/svg';
+import {useTheme} from '../components/ThemeProvider';
 
 type NavigationIconType = {
   route: string;
@@ -10,6 +9,8 @@ type NavigationIconType = {
 };
 
 const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
+  const {theme} = useTheme();
+
   const renderHomeIcon = (route: string, isFocused: boolean) => {
     let icon;
     switch (route) {
@@ -18,16 +19,16 @@ const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
           <HomeIcon
             width="20px"
             height="20px"
-            // stroke={isFocused && appColor.primary}
+            fill={isFocused && theme.colors.main}
           />
         );
         break;
-      case 'Profile':
+      case 'Chats':
         icon = (
           <ProfileIcon
             width="20px"
             height="20px"
-            // stroke={isFocused && appColor.primary}
+            stroke={isFocused && theme.colors.main}
           />
         );
         break;
@@ -36,7 +37,7 @@ const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
           <SettingIcon
             width="20px"
             height="20px"
-            // stroke={isFocused && appColor.primary}
+            stroke={isFocused && theme.colors.main}
           />
         );
         break;
@@ -46,6 +47,20 @@ const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
     }
     return icon;
   };
+
+  const styles = StyleSheet.create({
+    labelText: {
+      // color: theme.colors.main,
+      // iOS shadow properties
+      shadowColor: '#000',
+      shadowOffset: {width: 0, height: 4},
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      // Android shadow properties
+      elevation: 5,
+      padding: 4,
+    },
+  });
 
   return (
     <View
@@ -61,8 +76,7 @@ const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
           style={[
             styles.labelText,
             {
-              color: !isFocused ? appColor.black : appColor.primary,
-              // fontWeight: 'bold',
+              color: !isFocused ? theme.colors.main : theme.colors.main,
               fontSize: 12,
             },
           ]}>
@@ -74,17 +88,3 @@ const NavigationIcon = ({route, isFocused}: NavigationIconType) => {
 };
 
 export default NavigationIcon;
-
-const styles = StyleSheet.create({
-  labelText: {
-    color: appColor.white,
-    // iOS shadow properties
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    // Android shadow properties
-    elevation: 5,
-    padding: 4,
-  },
-});

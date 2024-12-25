@@ -5,7 +5,7 @@ import Toast from 'react-native-toast-message';
 import {FirebaseError} from '@firebase/app';
 
 const ForgotPasswordThunk = createAsyncThunk(
-  'auth/login',
+  'auth/ForgotPassword',
   async (userData: {email: string}, {getState, dispatch}) => {
     // Input validation
     if (!userData.email) {

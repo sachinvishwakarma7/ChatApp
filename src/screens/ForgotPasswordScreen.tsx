@@ -2,7 +2,6 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CommonAuthView from '../components/CommonAuthView';
 import CommonBackButton from '../components/CommonBackButton';
-import {appColor} from '../assets/colors/appColor';
 import CommonButton from '../components/CommonButton';
 import CommonInputText from '../components/CommonInputText';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -10,10 +9,12 @@ import {RootStackParamList} from '../navigation/AuthNavigation';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
 import ForgotPasswordThunk from '../redux/thunk/ForgotPasswordThunk';
 import {resetForgotPasswordAction} from '../redux/slices/ForgotPasswordReducer';
+import {useTheme} from '../components/ThemeProvider';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPasswordScreen'>;
 
 const ForgotPasswordScreen = ({navigation}: Props) => {
+  const {theme} = useTheme();
   const {data, loading} = useAppSelector(state => state.ForgotPasswordReducer);
 
   console.log('forgotpassword data==>', data);
@@ -39,6 +40,40 @@ const ForgotPasswordScreen = ({navigation}: Props) => {
       }),
     );
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    cardView: {
+      width: '90%',
+      maxWidth: 500,
+      backgroundColor: theme.colors.primary,
+      marginHorizontal: 20,
+      padding: 20,
+      borderRadius: 22,
+      alignSelf: 'center',
+      alignItems: 'center',
+    },
+    titleTextView: {
+      padding: 30,
+    },
+    titleText: {
+      fontSize: 26,
+      fontWeight: 'bold',
+      color: theme.colors.white,
+      paddingVertical: 6,
+    },
+    subTitleText: {
+      fontSize: 16,
+      paddingVertical: 6,
+      color: theme.colors.white,
+      width: 280,
+    },
+    buttonView: {
+      width: '100%',
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -85,37 +120,3 @@ const ForgotPasswordScreen = ({navigation}: Props) => {
 };
 
 export default ForgotPasswordScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  cardView: {
-    width: '90%',
-    maxWidth: 500,
-    backgroundColor: appColor.white,
-    marginHorizontal: 20,
-    padding: 20,
-    borderRadius: 22,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  titleTextView: {
-    padding: 30,
-  },
-  titleText: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: appColor.white,
-    paddingVertical: 6,
-  },
-  subTitleText: {
-    fontSize: 16,
-    paddingVertical: 6,
-    color: appColor.white,
-    width: 280,
-  },
-  buttonView: {
-    width: '100%',
-  },
-});

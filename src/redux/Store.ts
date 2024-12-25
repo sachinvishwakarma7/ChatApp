@@ -21,7 +21,7 @@ import ForgotPasswordReducer from './slices/ForgotPasswordReducer';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['LoginReducer', 'SignUpReducer'],
+  whitelist: ['LoginReducer'],
   blacklist: ['navigation'],
 };
 

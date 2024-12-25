@@ -5,10 +5,10 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {appColor} from '../assets/colors/appColor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/AuthNavigation';
 import {CommonActions} from '@react-navigation/native';
+import {useTheme} from './ThemeProvider';
 
 type ButtonProps = {
   currentIndex: Animated.SharedValue<number>;
@@ -29,6 +29,7 @@ const Button = ({
   flatListRef,
   navigation,
 }: ButtonProps) => {
+  const {theme} = useTheme();
   const rnBtnStyle = useAnimatedStyle(() => {
     return {
       width:
@@ -78,6 +79,30 @@ const Button = ({
       });
     }
   }, [currentIndex, length]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      borderRadius: 100,
+      backgroundColor: theme.colors.main,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    textStyle: {
+      color: theme.colors.white,
+      position: 'absolute',
+      fontWeight: '600',
+      fontSize: 16,
+    },
+    imageStyle: {
+      fontWeight: '600',
+      fontSize: 16,
+      position: 'absolute',
+      color: theme.colors.white,
+    },
+  });
+
   return (
     <AnimatedPressable style={[styles.container, rnBtnStyle]} onPress={onPress}>
       <Animated.Text style={[styles.textStyle, rnTextStyle]}>Go</Animated.Text>
@@ -93,26 +118,3 @@ const Button = ({
 };
 
 export default Button;
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    borderRadius: 100,
-    backgroundColor: appColor.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  textStyle: {
-    color: appColor.white,
-    position: 'absolute',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  imageStyle: {
-    fontWeight: '600',
-    fontSize: 16,
-    position: 'absolute',
-    color: appColor.white,
-  },
-});

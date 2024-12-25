@@ -3011,12 +3011,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-firebase/firestore@npm:^20.4.0":
+"@react-native-firebase/firestore@npm:^20.5.0":
   version: 20.5.0
   resolution: "@react-native-firebase/firestore@npm:20.5.0"
   peerDependencies:
     "@react-native-firebase/app": 20.5.0
   checksum: d46e799a07a985eb477ecea1973d44d7316331f3244b2626468230c1f4c97f69f7724afeb7515aaddfa33ef3dd851689936b69dd447cbc3e45a59d90c779c6a2
+  languageName: node
+  linkType: hard
+
+"@react-native-firebase/in-app-messaging@npm:^21.6.1":
+  version: 21.6.1
+  resolution: "@react-native-firebase/in-app-messaging@npm:21.6.1"
+  peerDependencies:
+    "@react-native-firebase/analytics": 21.6.1
+    "@react-native-firebase/app": 21.6.1
+  checksum: e086fb9319ab79c8300a2a3461c5af2db7e881f49a71790feb0a16d1a77420a5dc43f29ed74078e56b040c1058782b80b927511736190bd52e25f3d4513fdc90
   languageName: node
   linkType: hard
 
@@ -5236,6 +5246,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: fb681b242cccabed45494468f64282a7d375ea970e0adbcc5dcc92dcb7aba49b2081c2c9739d41bf71ce89ed68dd73bebfe06ca35129490704775d091895710b
+  languageName: node
+  linkType: hard
+
 "dayjs@npm:^1.8.15":
   version: 1.11.13
   resolution: "dayjs@npm:1.11.13"
@@ -5477,6 +5494,13 @@ __metadata:
   version: 0.13.1
   resolution: "emittery@npm:0.13.1"
   checksum: 2b089ab6306f38feaabf4f6f02792f9ec85fc054fda79f44f6790e61bbf6bc4e1616afb9b232e0c5ec5289a8a452f79bfa6d905a6fd64e94b49981f0934001c6
+  languageName: node
+  linkType: hard
+
+"emoji-datasource@npm:^6.0.0":
+  version: 6.1.1
+  resolution: "emoji-datasource@npm:6.1.1"
+  checksum: e7e48f6303448ee5fa2e761f24c7df35080319d41049e7c8d8a3d57103d2f0ae5dfcb859a19e3fc34d70a69b024fe9a40924f5376820d623fd865641b0b98517
   languageName: node
   linkType: hard
 
@@ -9571,6 +9595,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-emoji-selector@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "react-native-emoji-selector@npm:0.2.0"
+  dependencies:
+    emoji-datasource: ^6.0.0
+  checksum: 682dfa91a0d1d81e4af38994346c80713bd7075c1459633b3204d08d33227c59d3a93a995bd3a32a893e734429662795b8b3566471ad81b67e500508748e0129
+  languageName: node
+  linkType: hard
+
 "react-native-fs@npm:^2.20.0":
   version: 2.20.0
   resolution: "react-native-fs@npm:2.20.0"
@@ -9613,6 +9646,18 @@ __metadata:
     react-native-windows:
       optional: true
   checksum: dc4b366a0f561a47f032c027eb703a2be45e801788b915ed583e38f617eea23656eb63a77b17fb3a663fe3199b2ec25788f799e751421634e35a64f5258feed9
+  languageName: node
+  linkType: hard
+
+"react-native-reanimated-carousel@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "react-native-reanimated-carousel@npm:3.5.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-native: ">=0.6.0"
+    react-native-gesture-handler: ">=2.0.0"
+    react-native-reanimated: ">=3.0.0"
+  checksum: a2eb640453fa35f659c1fb5575f903364d513fb7f621104afa14fee2284132674dfaf0d87cb29e8c119f7513094a5967d5193f3dfa24043af167c6f26abcfe73
   languageName: node
   linkType: hard
 
@@ -10947,7 +10992,8 @@ __metadata:
     "@react-native-async-storage/async-storage": ^2.0.0
     "@react-native-firebase/app": ^20.4.0
     "@react-native-firebase/auth": ^20.4.0
-    "@react-native-firebase/firestore": ^20.4.0
+    "@react-native-firebase/firestore": ^20.5.0
+    "@react-native-firebase/in-app-messaging": ^21.6.1
     "@react-native-firebase/messaging": ^20.4.0
     "@react-native/babel-preset": 0.74.87
     "@react-native/eslint-config": 0.74.87
@@ -10963,16 +11009,19 @@ __metadata:
     "@types/react-test-renderer": ^18.0.0
     axios: ^1.7.6
     babel-jest: ^29.6.3
+    date-fns: ^4.1.0
     eslint: ^8.19.0
     jest: ^29.6.3
     prettier: 2.8.8
     react: 18.2.0
     react-native: 0.74.5
     react-native-document-picker: ^9.3.1
+    react-native-emoji-selector: ^0.2.0
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.18.1
     react-native-permissions: ^4.1.5
     react-native-reanimated: ^3.15.1
+    react-native-reanimated-carousel: ^3.5.1
     react-native-redash: ^18.1.3
     react-native-safe-area-context: ^4.10.9
     react-native-screens: ^3.34.0

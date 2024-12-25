@@ -1,6 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {appColor} from '../assets/colors/appColor';
+import {useTheme} from './ThemeProvider';
 
 type Props = {
   iconHeight?: number;
@@ -13,6 +13,31 @@ const CommonIcon = ({
   iconHeight = 100,
   iconWidth = 100,
 }: Props) => {
+  const {theme} = useTheme();
+
+  const styles = StyleSheet.create({
+    iconViewContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    iconNameText: {
+      color: theme.colors.white,
+      fontSize: 20,
+      fontWeight: 'bold',
+      paddingVertical: 10,
+    },
+    tinyLogo: {
+      width: 90,
+      height: 90,
+    },
+    mainIconView: {
+      borderRadius: 20,
+      backgroundColor: theme.colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
   return (
     <View style={styles.iconViewContainer}>
       <View
@@ -28,26 +53,3 @@ const CommonIcon = ({
 };
 
 export default CommonIcon;
-
-const styles = StyleSheet.create({
-  iconViewContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconNameText: {
-    color: appColor.white,
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingVertical: 10,
-  },
-  tinyLogo: {
-    width: 90,
-    height: 90,
-  },
-  mainIconView: {
-    borderRadius: 20,
-    backgroundColor: appColor.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

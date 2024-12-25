@@ -1,11 +1,9 @@
 import {
   View,
   useWindowDimensions,
-  ImageURISource,
   StyleSheet,
   Image,
   ImageProps,
-  Text,
 } from 'react-native';
 import React from 'react';
 import Animated, {
@@ -13,6 +11,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import {useTheme} from './ThemeProvider';
 
 type Props = {
   item: {id: string; title: string; image: ImageProps};
@@ -21,6 +20,7 @@ type Props = {
 };
 
 const ListItem = ({item, index, x}: Props) => {
+  const {theme} = useTheme();
   const {width} = useWindowDimensions();
   // const rnImageStyle = useAnimatedStyle(() => {
   //   const translateY = interpolate(
@@ -69,6 +69,31 @@ const ListItem = ({item, index, x}: Props) => {
       transform: [{scale: translateY}],
     };
   }, [index, x]);
+
+  const styles = StyleSheet.create({
+    itemContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    textItem1: {
+      flexDirection: 'column',
+      fontWeight: '600',
+      lineHeight: 41,
+      fontSize: 20,
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    textItem2: {
+      flexDirection: 'column',
+      fontWeight: '300',
+      lineHeight: 41,
+      fontSize: 16,
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+  });
+
   return (
     <View style={[styles.itemContainer, {width: width}]}>
       {/* <Animated.Image
@@ -94,27 +119,3 @@ const ListItem = ({item, index, x}: Props) => {
 };
 
 export default React.memo(ListItem);
-
-const styles = StyleSheet.create({
-  itemContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textItem1: {
-    flexDirection: 'column',
-    fontWeight: '600',
-    lineHeight: 41,
-    fontSize: 20,
-    color: 'gray',
-    textAlign: 'center',
-  },
-  textItem2: {
-    flexDirection: 'column',
-    fontWeight: '300',
-    lineHeight: 41,
-    fontSize: 16,
-    color: 'gray',
-    textAlign: 'center',
-  },
-});

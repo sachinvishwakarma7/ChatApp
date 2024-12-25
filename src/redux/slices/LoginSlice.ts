@@ -7,12 +7,14 @@ export interface LoginInitialStateType {
   signInStatus: 'idle' | 'loading' | 'success' | 'failed';
   error: string;
   isLogin: boolean;
+  isDarkTheme: boolean;
 }
 
 const initialState: LoginInitialStateType = {
   data: {},
   loading: false,
   isLogin: false,
+  isDarkTheme: false,
   signInStatus: 'idle',
   error: '',
 };
@@ -21,6 +23,9 @@ const LoginSlice = createSlice({
   name: 'auth/login',
   initialState,
   reducers: {
+    setIsDarkThemeAction: (state, {payload}) => {
+      state.isDarkTheme = payload;
+    },
     setIsLoginAction: (state, {payload}) => {
       state.isLogin = payload;
     },
@@ -34,6 +39,7 @@ const LoginSlice = createSlice({
       (state.data = {}),
         (state.loading = false),
         (state.isLogin = false),
+        // (state.isDarkTheme = false),
         (state.signInStatus = 'idle');
       state.error = '';
     },
@@ -47,8 +53,7 @@ const LoginSlice = createSlice({
         (state.data = payload),
           (state.loading = false),
           (state.isLogin = false),
-
-        state.error = '';
+          (state.error = '');
       })
       .addCase(LoginThunk.rejected, (state, {payload}) => {
         (state.data = []), (state.loading = false), (state.isLogin = false);
@@ -57,6 +62,11 @@ const LoginSlice = createSlice({
   },
 });
 
-export const {setIsLoginAction, resetUserLoginAction, signInStatusAction} = LoginSlice.actions;
+export const {
+  setIsLoginAction,
+  resetUserLoginAction,
+  signInStatusAction,
+  setIsDarkThemeAction,
+} = LoginSlice.actions;
 
 export default LoginSlice.reducer;

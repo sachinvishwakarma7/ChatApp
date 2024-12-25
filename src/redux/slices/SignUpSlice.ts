@@ -16,7 +16,7 @@ const initialState: AuthInitialStateType = {
 };
 
 const SignUpSlice = createSlice({
-  name: 'auth/signUp',
+  name: 'auth/SignUp',
   initialState,
   reducers: {
     resetUserSignupAction: state => {

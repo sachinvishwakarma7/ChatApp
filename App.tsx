@@ -8,7 +8,10 @@ import {persistStore} from 'redux-persist';
 import {ActivityIndicator, Alert, StyleSheet, View} from 'react-native';
 import store from './src/redux/Store';
 import messaging from '@react-native-firebase/messaging';
-import RequestPermission from './src/assets/utils/RequestPermission';
+import RequestPermission from './src/utils/RequestPermission';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {ThemeProvider} from './src/components/ThemeProvider';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
 
 const App = () => {
   const getFcmToken = async () => {
@@ -32,17 +35,28 @@ const App = () => {
         type: 'info', // 'success' | 'error' | 'info'
         text1: remoteMessage?.notification?.title,
         text2: remoteMessage?.notification?.body, // Optional message
-      }
-    );
+      });
       console.log('remoteMessage', remoteMessage?.notification?.title);
     });
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    // Enable In-App Messaging
+    inAppMessaging()
+      .setMessagesDisplaySuppressed(false)
+      .then(() => console.log('In-App Messaging enabled'));
+    inAppMessaging()
+      .setAutomaticDataCollectionEnabled(true)
+      .then(() =>
+        console.log('In-App setAutomaticDataCollectionEnabled enabled'),
+      );
+  }, []);
+
   let persistor = persistStore(store);
   const Loading = () => {
     return (
-      <View style={ styles.contaniner }>
+      <View style={styles.contaniner}>
         <ActivityIndicator
           style={styles.loadingvie}
           size={'large'}
@@ -53,9 +67,13 @@ const App = () => {
   };
   return (
     <Provider store={store}>
-      <PersistGate loading={<Loading />} persistor={persistor}>
-        <RootNavigation />
-      </PersistGate>
+      <ThemeProvider>
+        <PersistGate loading={<Loading />} persistor={persistor}>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <RootNavigation />
+          </GestureHandlerRootView>
+        </PersistGate>
+      </ThemeProvider>
     </Provider>
   );
 };

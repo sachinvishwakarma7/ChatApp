@@ -3,10 +3,11 @@ import {
   KeyboardType,
   StyleSheet,
   TextInput,
-  TextInputProps,
+  View,
+  ViewStyle,
 } from 'react-native';
 import React from 'react';
-import {appColor} from '../assets/colors/appColor';
+import {useTheme} from './ThemeProvider';
 
 type InputProps = {
   onChangeText?: (value: string) => void;
@@ -14,6 +15,7 @@ type InputProps = {
   placeholder?: string;
   keyboardType?: KeyboardType;
   inputMode?: InputModeOptions;
+  containerStyle?: ViewStyle;
   textContentType?:
     | 'none'
     | 'URL'
@@ -65,30 +67,34 @@ const CommonInputText = ({
   placeholder,
   textContentType,
   keyboardType,
+  containerStyle,
 }: InputProps) => {
+  const {theme} = useTheme();
+
+  const styles = StyleSheet.create({
+    input: {
+      height: 50,
+      backgroundColor: theme.colors.secondary,
+      padding: 10,
+      borderRadius: 6,
+      marginVertical: 6,
+      color: theme.colors.text,
+    },
+  });
+
   return (
-    <>
+    <View style={containerStyle}>
       <TextInput
         style={styles.input}
         onChangeText={onChangeText}
         value={value}
         placeholder={placeholder}
-        placeholderTextColor={appColor.gray}
+        placeholderTextColor={theme.colors.text}
         textContentType={textContentType}
         keyboardType={keyboardType}
       />
-    </>
+    </View>
   );
 };
 
 export default CommonInputText;
-
-const styles = StyleSheet.create({
-  input: {
-    height: 50,
-    backgroundColor: appColor.lightGray,
-    padding: 10,
-    borderRadius: 6,
-    marginVertical: 6,
-  },
-});

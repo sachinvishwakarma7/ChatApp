@@ -6,7 +6,7 @@ import Animated, {
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import {appColor} from '../assets/colors/appColor';
+import {useTheme} from './ThemeProvider';
 
 type Props = {
   length: number;
@@ -14,6 +14,7 @@ type Props = {
 };
 
 const PaginationElement = ({length, x}: Props) => {
+  const {theme} = useTheme();
   const {width: SCREEN_WIDTH} = useWindowDimensions();
 
   const PaginationComponent = useCallback(({index}: {index: number}) => {
@@ -36,7 +37,7 @@ const PaginationElement = ({length, x}: Props) => {
           index * SCREEN_WIDTH,
           (index + 1) * SCREEN_WIDTH,
         ],
-        [appColor.lightGray, appColor.primary, appColor.lightGray],
+        [theme.colors.secondary, theme.colors.main, theme.colors.secondary],
       );
 
       return {

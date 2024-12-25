@@ -1,18 +1,13 @@
 import {
   StyleSheet,
-  Text,
   View,
-  PanResponder,
-  useWindowDimensions,
   ViewToken,
   SafeAreaView,
   Pressable,
   ImageProps,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
-import {FlatList} from 'react-native-gesture-handler';
+import React, {useCallback} from 'react';
 import Animated, {
-  interpolate,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -23,14 +18,8 @@ import Animated, {
 import PaginationElement from '../components/PaginationElement';
 import Button from '../components/Button';
 import ListItem from '../components/ListItem';
-import {appColor} from '../assets/colors/appColor';
-import {
-  NavigationAction,
-  NavigationProp,
-  NavigationState,
-} from '@react-navigation/native';
-import {RootStackParamList} from '../navigation/AuthNavigation';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackScreenProps} from '../navigation/AuthNavigation';
+import {useTheme} from '../components/ThemeProvider';
 
 const defaultData = [
   {
@@ -55,13 +44,10 @@ const defaultData = [
   },
 ];
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'OnboardingScreen',
-  'Stack'
->;
-
-const OnboardingScreen = ({navigation}: Props) => {
+const OnboardingScreen = ({
+  navigation,
+}: RootStackScreenProps<'OnboardingScreen'>) => {
+  const {theme} = useTheme();
   const x = useSharedValue(0);
   const flatListIndex = useSharedValue(0);
   const flatListRef = useAnimatedRef<
@@ -123,6 +109,35 @@ const OnboardingScreen = ({navigation}: Props) => {
     [x],
   );
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.primary,
+    },
+    bottomContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: 'transparent',
+      padding: 10,
+      paddingBottom: 40,
+      paddingHorizontal: 20,
+    },
+    text: {
+      alignSelf: 'center',
+      color: theme.colors.text,
+    },
+    heading: {
+      fontSize: 22,
+      fontWeight: 'bold',
+      color: 'green',
+      marginBottom: 6,
+    },
+    paragraph: {
+      fontSize: 14,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.FlatList
@@ -148,14 +163,11 @@ const OnboardingScreen = ({navigation}: Props) => {
             position: 'absolute',
             right: 30,
             top: 30,
-            // backgroundColor: appColor.primary,
-            // borderRadius: 30,
             padding: 10,
-            // paddingHorizontal: 20,
           },
           skipTextStyle,
         ]}>
-        <Animated.Text style={{color: appColor.primary, fontWeight: 'bold'}}>
+        <Animated.Text style={{color: theme.colors.main, fontWeight: 'bold'}}>
           Skip
         </Animated.Text>
       </AnimatedPressable>
@@ -173,32 +185,3 @@ const OnboardingScreen = ({navigation}: Props) => {
 };
 
 export default OnboardingScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: appColor.white,
-  },
-  bottomContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    padding: 10,
-    paddingBottom: 40,
-    paddingHorizontal: 20,
-  },
-  text: {
-    alignSelf: 'center',
-    color: 'gray',
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'green',
-    marginBottom: 6,
-  },
-  paragraph: {
-    fontSize: 14,
-  },
-});

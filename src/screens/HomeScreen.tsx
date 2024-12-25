@@ -1,15 +1,52 @@
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React from 'react';
-import {appColor} from '../assets/colors/appColor';
 import CommonButton from '../components/CommonButton';
 import CommonAuthView from '../components/CommonAuthView';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AuthNavigation';
+import {RootStackScreenProps} from '../navigation/AuthNavigation';
 import CommonIcon from '../components/CommonIcon';
+import {useTheme} from '../components/ThemeProvider';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
+const HomeScreen = ({navigation}: RootStackScreenProps<'HomeScreen'>) => {
+  const {theme} = useTheme();
 
-const HomeScreen = ({navigation}: Props) => {
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.primary,
+    },
+    text: {
+      color: 'white',
+    },
+    cardView: {
+      width: '90%',
+      maxWidth: 500,
+      backgroundColor: theme.colors.white,
+      marginHorizontal: 20,
+      padding: 20,
+      borderRadius: 22,
+      alignSelf: 'center',
+      alignItems: 'center',
+    },
+    titleText: {
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      paddingVertical: 6,
+      paddingTop: 14,
+      fontSize: 20,
+    },
+    subTitleText: {
+      color: theme.colors.text,
+      fontSize: 16,
+    },
+    buttonView: {
+      paddingTop: 30,
+      width: '100%',
+    },
+    cardIconView: {
+      padding: 20,
+    },
+  });
+
   return (
     <CommonAuthView>
       <ScrollView
@@ -49,41 +86,3 @@ const HomeScreen = ({navigation}: Props) => {
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: appColor.lightGray,
-  },
-  text: {
-    color: 'white',
-  },
-  cardView: {
-    width: '90%',
-    maxWidth: 500,
-    backgroundColor: appColor.white,
-    marginHorizontal: 20,
-    padding: 20,
-    borderRadius: 22,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  titleText: {
-    fontWeight: 'bold',
-    color: appColor.gray,
-    paddingVertical: 6,
-    paddingTop: 14,
-    fontSize: 20,
-  },
-  subTitleText: {
-    color: appColor.gray,
-    fontSize: 16,
-  },
-  buttonView: {
-    paddingTop: 30,
-    width: '100%',
-  },
-  cardIconView: {
-    padding: 20,
-  },
-});
