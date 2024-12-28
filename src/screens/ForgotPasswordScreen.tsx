@@ -4,29 +4,24 @@ import CommonAuthView from '../components/CommonAuthView';
 import CommonBackButton from '../components/CommonBackButton';
 import CommonButton from '../components/CommonButton';
 import CommonInputText from '../components/CommonInputText';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AuthNavigation';
+import {RootStackScreenProps} from '../navigation/AuthNavigation';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
 import ForgotPasswordThunk from '../redux/thunk/ForgotPasswordThunk';
 import {resetForgotPasswordAction} from '../redux/slices/ForgotPasswordReducer';
 import {useTheme} from '../components/ThemeProvider';
+import {EmailIcon} from '../assets/svg';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPasswordScreen'>;
-
-const ForgotPasswordScreen = ({navigation}: Props) => {
+const ForgotPasswordScreen = ({
+  navigation,
+}: RootStackScreenProps<'ForgotPasswordScreen'>) => {
   const {theme} = useTheme();
   const {data, loading} = useAppSelector(state => state.ForgotPasswordReducer);
-
-  console.log('forgotpassword data==>', data);
-
   const dispatch = useAppDispatch();
   const [userData, setUserData] = useState({
     email: '',
   });
 
   useEffect(() => {
-    console.log('forgotpassword useEffect', data);
-
     if (data?.passwordReset === 'success') {
       navigation.navigate('SignInScreen');
       dispatch(resetForgotPasswordAction());
@@ -104,6 +99,8 @@ const ForgotPasswordScreen = ({navigation}: Props) => {
                 }
                 placeholder="Email"
                 textContentType="emailAddress"
+                isIcon={true}
+                Icon={<EmailIcon />}
               />
               <CommonButton
                 onPress={forgotPasswordhandler}

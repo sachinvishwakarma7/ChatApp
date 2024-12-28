@@ -76,7 +76,7 @@ import {
           renderItem={({item}) => {
             return (
               <View>
-                <Text style={{color: 'red', fontSize: 20}}>{item?.name}</Text>
+                {/* <Text style={{color: 'red', fontSize: 20}}>{item?.name}</Text> */}
               </View>
             );
           }}

@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import EmojiSelector from 'react-native-emoji-selector';
 import {RootStackScreenProps} from '../navigation/AuthNavigation';
 import {useAppSelector} from '../redux/Hooks';
 import CommonInputText from '../components/CommonInputText';
@@ -19,17 +20,17 @@ import CommonBackButton from '../components/CommonBackButton';
 import {KeyboardAvoidingView} from 'react-native';
 import CommonModel from '../components/CommonModel';
 import {useTheme} from '../components/ThemeProvider';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import {ChatIcon, SearchIcon, UserIcon} from '../assets/svg';
 
 type MessageType = {
-  id: string; // Firebase document IDs are strings
-  from: string; // Firebase user IDs are strings
+  id: string;
+  from: string;
   to: string;
   message: string;
   isRead: boolean;
   edited: boolean;
   timestamp: FirebaseFirestoreTypes.Timestamp;
-  [key: string]: any; // For other dynamic fields
+  [key: string]: any;
 };
 
 const ChatUserScreen = ({
@@ -37,10 +38,10 @@ const ChatUserScreen = ({
   navigation,
 }: RootStackScreenProps<'ChatUserScreen'>) => {
   const {theme} = useTheme();
-  const {id, name, email} = route.params.selectedUserData; // User you're chatting with
-  const {data} = useAppSelector(state => state.LoginReducer); // Current user data
-  const [message, setMessage] = useState<MessageType[]>([]);
-  const flatListRef = useRef<FlatList<MessageType>>(null);
+  const {id, name, email} = route.params.selectedUserData;
+  const {data} = useAppSelector(state => state.LoginReducer);
+  const [message, setMessage] = useState<Record<string, MessageType[]>>({});
+  const flatListRef = useRef<FlatList<any>>(null);
 
   const [isRequestPending, setIsRequestPending] = useState(false);
   const [isEmojiOpen, setIsEmojiOpen] = useState<boolean>(false);
@@ -51,37 +52,63 @@ const ChatUserScreen = ({
 
   const [typedMessage, setTypedMessage] = useState<string>('');
 
-  const currentUserId = data?.uid; // Get current user ID from state
+  const currentUserId = data?.uid;
 
   const formatTimestamp = useCallback(
     (timestamp: FirebaseFirestoreTypes.Timestamp) => {
-      const date = timestamp.toDate(); // Convert Firestore timestamp to JS Date
+      const date = timestamp.toDate();
       const hours = date.getHours();
       const minutes = date.getMinutes();
       const ampm = hours >= 12 ? 'PM' : 'AM';
-      const formattedHours = hours % 12 || 12; // Convert 0 hours to 12
+      const formattedHours = hours % 12 || 12;
       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
       return `${formattedHours}:${formattedMinutes} ${ampm}`;
     },
     [message],
   );
 
-  useEffect(() => {
-    console.log('currentUserId, id', currentUserId, id);
+  const formatDateGroup = useCallback(
+    (timestamp: FirebaseFirestoreTypes.Timestamp) => {
+      const date = timestamp.toDate();
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      if (date >= today) {
+        return 'Today';
+      } else if (date >= yesterday) {
+        return 'Yesterday';
+      } else {
+        return date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        });
+      }
+    },
+    [message],
+  );
 
+  useEffect(() => {
     const messagesQuery = firestore()
       .collection('ChatMessages')
       .where('from', 'in', [currentUserId, id])
       .where('to', 'in', [currentUserId, id]);
-    // .orderBy('id', 'asc'); // Order by time
 
     const unsubscribe = messagesQuery.onSnapshot(
       (snapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
-        const retrievedMessages: MessageType[] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        console.log('retrievedMessages', retrievedMessages);
+        const retrievedMessages: MessageType[] = snapshot.docs.map(doc => {
+          return {
+            id: doc.id,
+            // from: doc.data().from ?? '',
+            // to: doc.data().to ?? '',
+            // message: doc.data().message ?? '',
+            // isRead: doc.data().isRead ?? false,
+            // timestamp: doc.data().timestamp ?? new Date(),
+            // edited: doc.data().edited ?? false,
+            ...doc.data(),
+          };
+        });
 
         const filteredMessages = retrievedMessages
           .filter(
@@ -95,7 +122,17 @@ const ChatUserScreen = ({
               a.timestamp.toDate().getTime() - b.timestamp.toDate().getTime(),
           );
 
-        setMessage(filteredMessages);
+        // Group messages by date
+        const groupedMessages: Record<string, MessageType[]> = {};
+        filteredMessages.forEach(msg => {
+          const dateGroup = formatDateGroup(msg.timestamp);
+          if (!groupedMessages[dateGroup]) {
+            groupedMessages[dateGroup] = [];
+          }
+          groupedMessages[dateGroup].push(msg);
+        });
+
+        setMessage(groupedMessages);
 
         setTimeout(() => {
           flatListRef.current?.scrollToEnd({animated: true});
@@ -227,6 +264,11 @@ const ChatUserScreen = ({
       flex: 1,
       backgroundColor: theme.colors.primary,
     },
+    contentContainerStyle: {
+      flexGrow: 1,
+      justifyContent: 'flex-end',
+      padding: 20,
+    },
     buttonWrapper: {
       justifyContent: 'flex-end',
     },
@@ -294,6 +336,27 @@ const ChatUserScreen = ({
       color: theme.colors.text,
       fontSize: 12,
     },
+    dateLable: {
+      alignSelf: 'center',
+      backgroundColor: theme.colors.secondary,
+      padding: 6,
+      paddingHorizontal: 10,
+      borderRadius: 12,
+      opacity: 0.5,
+    },
+    headerView: {
+      flexDirection: 'row',
+    },
+    profileImageView: {
+      height: 40,
+      width: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.white,
+      alignSelf: 'center',
+      marginRight: 10,
+    },
     modelView: {},
     modelButtonContainer: {
       flexDirection: 'row',
@@ -306,67 +369,73 @@ const ChatUserScreen = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}>
       <CommonBackButton onPress={() => navigation.goBack()}>
-        <Text style={styles.sentMessageText}>{`${name}\n${email}`}</Text>
+        <View style={styles.headerView}>
+          <View style={styles.profileImageView}>
+            <UserIcon />
+          </View>
+          <Text style={styles.sentMessageText}>{`${name}\n${email}`}</Text>
+        </View>
       </CommonBackButton>
       <View style={styles.chatBoxContainer}>
         <View style={{flex: 1}}>
-          {message.length !== 0 ? (
+          {Object.keys(message).length !== 0 ? (
             <FlatList
               ref={flatListRef}
-              contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: 'flex-end',
-                padding: 20,
-              }}
-              key={item => item.id}
-              data={message}
-              renderItem={({item}) => (
-                <View
-                  style={
-                    item?.from === currentUserId
-                      ? styles.sentMessageWrapper
-                      : styles.reciveMessageWrapper
-                  }>
-                  <Pressable
-                    onLongPress={
-                      item?.from === currentUserId
-                        ? () => {
-                            setModalVisible(true);
-                            setEditMessageInput(item?.message);
-                            setEditMessageData(item);
-                          }
-                        : () => {}
-                    }
-                    style={
-                      item?.from === currentUserId
-                        ? styles.sentMessageContainer
-                        : styles.reciveMessageContainer
-                    }>
-                    <Text
-                      style={
-                        item?.from === currentUserId
-                          ? styles.sentMessageText
-                          : styles.reciveMessageText
-                      }>
-                      {item.message}
-                    </Text>
-                  </Pressable>
-                  <Text
-                    style={[
-                      styles.dateTextStyle,
-                      {
-                        textAlign:
-                          item?.from === currentUserId ? 'right' : `left`,
-                      },
-                    ]}>
-                    {item?.edited && <Text>(Edited) </Text>}
-                    {formatTimestamp(item?.timestamp)}
+              contentContainerStyle={styles.contentContainerStyle}
+              data={Object.entries(message)}
+              keyExtractor={(item, index) => `${index}`}
+              renderItem={({item: [date, msgs]}) => (
+                <>
+                  <Text style={[styles.dateTextStyle, styles.dateLable]}>
+                    {date}
                   </Text>
-                </View>
+                  {msgs.map((msg: MessageType) => (
+                    <View
+                      key={msg.id}
+                      style={
+                        msg.from === currentUserId
+                          ? styles.sentMessageWrapper
+                          : styles.reciveMessageWrapper
+                      }>
+                      <Pressable
+                        onLongPress={
+                          msg.from === currentUserId
+                            ? () => {
+                                setModalVisible(true);
+                                setEditMessageInput(msg.message);
+                                setEditMessageData(msg);
+                              }
+                            : () => {}
+                        }
+                        style={
+                          msg.from === currentUserId
+                            ? styles.sentMessageContainer
+                            : styles.reciveMessageContainer
+                        }>
+                        <Text
+                          style={
+                            msg.from === currentUserId
+                              ? styles.sentMessageText
+                              : styles.reciveMessageText
+                          }>
+                          {msg.message}
+                        </Text>
+                      </Pressable>
+                      <Text
+                        style={[
+                          styles.dateTextStyle,
+                          {
+                            textAlign:
+                              msg.from === currentUserId ? 'right' : 'left',
+                          },
+                        ]}>
+                        {msg.edited && <Text>(Edited) </Text>}
+                        {formatTimestamp(msg.timestamp)}
+                      </Text>
+                    </View>
+                  ))}
+                </>
               )}
-              onContentSizeChange={() =>
-                flatListRef.current?.scrollToEnd({animated: true})
-              }
             />
           ) : (
             <View
@@ -387,7 +456,9 @@ const ChatUserScreen = ({
             containerStyle={styles.commonInputStyle}
             value={typedMessage}
             onChangeText={value => setTypedMessage(value)}
-            placeholder="Type your message"
+            placeholder="Type your message..."
+            isIcon={true}
+            Icon={<ChatIcon />}
           />
           <CommonButton
             containerStyle={styles.commonButtonStyle}

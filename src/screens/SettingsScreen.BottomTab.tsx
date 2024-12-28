@@ -10,7 +10,6 @@ import React, {useState} from 'react';
 import {SettingsTabScreenProps} from '../navigation/AuthNavigation';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
 
-import CommonButton from '../components/CommonButton';
 import {LogoutApp} from '../utils/logout';
 import {useTheme} from '../components/ThemeProvider';
 import {LogoutIcon, UserIcon} from '../assets/svg';
@@ -101,16 +100,6 @@ const SettingsScreen = ({navigation}: SettingsTabScreenProps) => {
         onPress={() => navigation.canGoBack() && navigation.goBack()}>
         <Text style={styles.titleText}>{`Settings`}</Text>
       </CommonBackButton>
-      {/* <CommonButton
-        title="Logout"
-        type="filled"
-        onPress={() => LogoutApp(dispatch, navigation, data?.uid)}
-      /> */}
-      {/* <CommonButton
-        title="swit"
-        type="filled"
-        onPress={() => LogoutApp(dispatch, navigation, data?.uid)}
-      /> */}
       <View style={{padding: 20}}>
         <FlatList
           data={menuData}
@@ -137,7 +126,7 @@ const SettingsScreen = ({navigation}: SettingsTabScreenProps) => {
         />
       </View>
       <View style={{position: 'absolute', bottom: 100, alignSelf: 'center'}}>
-        <Text style={{color: 'black'}}>App Version: 0.01</Text>
+        <Text style={{color: theme.colors.text}}>App Version: 0.01</Text>
       </View>
     </View>
   );

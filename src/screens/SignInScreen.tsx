@@ -6,18 +6,18 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import Toast from 'react-native-toast-message';
 import CommonAuthView from '../components/CommonAuthView';
 import CommonBackButton from '../components/CommonBackButton';
 import CommonButton from '../components/CommonButton';
 import CommonInputText from '../components/CommonInputText';
 import {
-  RootStackParamList,
   RootStackScreenProps,
 } from '../navigation/AuthNavigation';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
 import LoginThunk from '../redux/thunk/LoginThunk';
-import Toast from 'react-native-toast-message';
 import {useTheme} from '../components/ThemeProvider';
+import {EmailIcon, PassworkLockIcon} from '../assets/svg';
 
 const SignInScreen = ({navigation}: RootStackScreenProps<'SignInScreen'>) => {
   const {theme} = useTheme();
@@ -25,8 +25,6 @@ const SignInScreen = ({navigation}: RootStackScreenProps<'SignInScreen'>) => {
     state => state.LoginReducer,
   );
   const dispatch = useAppDispatch();
-
-  // console.log('loginRes===>', data);
 
   const [userData, setUserData] = useState({
     email: '',
@@ -43,8 +41,6 @@ const SignInScreen = ({navigation}: RootStackScreenProps<'SignInScreen'>) => {
   };
 
   useEffect(() => {
-    // console.log("signInStatus", signInStatus);
-
     if (signInStatus === 'success') {
       navigation.reset({
         index: 0,
@@ -125,6 +121,8 @@ const SignInScreen = ({navigation}: RootStackScreenProps<'SignInScreen'>) => {
                 }
                 placeholder="Email"
                 textContentType="emailAddress"
+                isIcon={true}
+                Icon={<EmailIcon />}
               />
               <CommonInputText
                 onChangeText={(value: string) =>
@@ -132,6 +130,8 @@ const SignInScreen = ({navigation}: RootStackScreenProps<'SignInScreen'>) => {
                 }
                 placeholder="Password"
                 textContentType="password"
+                isIcon={true}
+                Icon={<PassworkLockIcon />}
               />
               <CommonButton
                 onPress={handleLogin}

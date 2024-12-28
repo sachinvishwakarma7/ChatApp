@@ -1,4 +1,4 @@
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
@@ -7,6 +7,7 @@ import {HomeTabScreenProps} from '../navigation/AuthNavigation';
 import {useTheme} from '../components/ThemeProvider';
 import CommonCarousel from '../components/CommonCarousel';
 import CommonBackButton from '../components/CommonBackButton';
+import {UserIcon} from '../assets/svg';
 
 const HomeScreen = ({navigation}: HomeTabScreenProps) => {
   const {theme, toggleTheme} = useTheme();
@@ -64,6 +65,16 @@ const HomeScreen = ({navigation}: HomeTabScreenProps) => {
       backgroundColor: theme.colors.primary,
       padding: 20,
     },
+    profileImageView: {
+      height: 40,
+      width: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.white,
+      alignSelf: 'center',
+      marginRight: 10,
+    },
     titleText: {
       color: theme.colors.white,
       fontSize: 20,
@@ -72,14 +83,20 @@ const HomeScreen = ({navigation}: HomeTabScreenProps) => {
       backgroundColor: theme.colors.primary,
       marginVertical: 10,
       borderRadius: 10,
-      shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
-      shadowOpacity: 1,
-      shadowRadius: 4,
-      elevation: 3,
     },
     userDetailView: {
       flexDirection: 'row',
+      alignItems: 'center',
+    },
+    cardProfileUserView: {
+      height: 50,
+      width: 50,
+      borderRadius: 25,
+      backgroundColor: theme.colors.secondary,
+      marginRight: 10,
+      marginHorizontal: 20,
+      margin: 20,
+      justifyContent: 'center',
       alignItems: 'center',
     },
   });
@@ -106,17 +123,9 @@ const HomeScreen = ({navigation}: HomeTabScreenProps) => {
             paddingRight: 10,
           }}>
           <Text style={styles.titleText}>{`Home`}</Text>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              borderRadius: 25,
-              backgroundColor: theme.colors.white,
-              marginRight: 10,
-              marginHorizontal: 20,
-              margin: 20,
-            }}
-          />
+          <View style={styles.profileImageView}>
+            <UserIcon />
+          </View>
         </View>
       </CommonBackButton>
       <FlatList
@@ -129,17 +138,9 @@ const HomeScreen = ({navigation}: HomeTabScreenProps) => {
         renderItem={({item}) => (
           <View style={styles.postCardContainer}>
             <View style={styles.userDetailView}>
-              <View
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 25,
-                  backgroundColor: theme.colors.secondary,
-                  marginRight: 10,
-                  marginHorizontal: 20,
-                  margin: 20,
-                }}
-              />
+              <View style={styles.cardProfileUserView}>
+                <UserIcon />
+              </View>
               <View>
                 <Text
                   style={[

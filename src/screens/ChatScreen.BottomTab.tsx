@@ -8,11 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from 'react-native-screens/lib/typescript/native-stack/types';
-import {
-  ChatsTabScreenProps,
-  RootStackParamList,
-} from '../navigation/AuthNavigation'; // Ensure this file exports RootStackParamList
 import {
   collection,
   getDocs,
@@ -21,8 +16,10 @@ import {
 import {useAppSelector} from '../redux/Hooks';
 import CommonInputText from '../components/CommonInputText';
 import {useTheme} from '../components/ThemeProvider';
-import inAppMessaging from '@react-native-firebase/in-app-messaging';
+// import inAppMessaging from '@react-native-firebase/in-app-messaging';
 import CommonBackButton from '../components/CommonBackButton';
+import {ChatsTabScreenProps} from '../navigation/AuthNavigation';
+import {SearchIcon, UserIcon} from '../assets/svg';
 
 type ChatUser = {
   id: string;
@@ -74,15 +71,12 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
     fetchUsers();
   }, []);
 
-  const triggerTestMessage = () => {
-    inAppMessaging()
-      .triggerEvent('custom_event')
-      .then(() => console.log('Custom event triggered for In-App Messaging'))
-      .catch(error => console.log('error', error));
-  };
-  // useEffect(() => {
-  //   triggerTestMessage();
-  // }, []);
+  // const triggerTestMessage = () => {
+  //   inAppMessaging()
+  //     .triggerEvent('custom_event')
+  //     .then(() => console.log('Custom event triggered for In-App Messaging'))
+  //     .catch(error => console.log('error', error));
+  // };
 
   const UserListItem: React.FC<{user: ChatUser}> = ({user}) => {
     return (
@@ -91,15 +85,9 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
           navigation.navigate('ChatUserScreen', {selectedUserData: user})
         }
         style={styles.userContainer}>
-        <View
-          style={{
-            height: 40,
-            width: 40,
-            borderRadius: 20,
-            backgroundColor: theme.colors.secondary,
-            alignSelf: 'center',
-            marginRight: 10,
-          }}></View>
+        <View style={styles.profileImageView}>
+          <UserIcon />
+        </View>
         <View>
           <Text
             style={[styles.userNameText, {fontWeight: 'bold', fontSize: 16}]}>
@@ -119,6 +107,16 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
     searchContainer: {
       margin: 20,
     },
+    profileImageView: {
+      height: 40,
+      width: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.secondary,
+      alignSelf: 'center',
+      marginRight: 10,
+    },
     headerView: {
       backgroundColor: theme.colors.primary,
       padding: 20,
@@ -131,18 +129,18 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: theme.colors.primary,
-      // paddingVertical: 20,
-      margin: 20,
+      marginHorizontal: 20,
+      marginBottom: 10,
+      borderRadius: 10,
+      padding: 16,
     },
     userNameText: {
       color: theme.colors.text,
     },
   });
+
   return (
     <View style={styles.container}>
-      {/* <View style={styles.headerView}>
-        <Text style={styles.titleText}>Messages</Text>
-      </View> */}
       <CommonBackButton
         onPress={() => navigation.canGoBack() && navigation.goBack()}>
         <Text style={styles.titleText}>{`Messages`}</Text>
@@ -151,7 +149,9 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
         <CommonInputText
           value={searchInput}
           onChangeText={value => searchInputHandler(value)}
-          placeholder="Search by name or email"
+          placeholder="Search..."
+          isIcon={true}
+          Icon={<SearchIcon />}
         />
       </View>
       {/* <Button title="Trigger Event" onPress={triggerTestMessage} /> */}

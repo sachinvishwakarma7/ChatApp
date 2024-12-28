@@ -16,6 +16,7 @@ import SignUpThunk from '../redux/thunk/SignUpThunk';
 import {useAppDispatch, useAppSelector} from '../redux/Hooks';
 import Toast from 'react-native-toast-message';
 import {useTheme} from '../components/ThemeProvider';
+import {EmailIcon, PassworkLockIcon, UserIcon} from '../assets/svg';
 
 const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
   const {theme} = useTheme();
@@ -25,8 +26,6 @@ const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
   const {data, loading, signUpStatus} = useAppSelector(
     state => state.SignUpReducer,
   );
-
-  console.log('SignUpRes===>', data);
 
   const [userData, setUserData] = useState({
     fullName: '',
@@ -50,8 +49,6 @@ const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
   };
 
   useEffect(() => {
-    console.log('data===>', data);
-
     if (signUpStatus === 'success') {
       // Call function to add the user to the ChatUsers collection
       // addUserForChat();
@@ -142,11 +139,15 @@ const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
                   setUserData({...userData, fullName: value})
                 }
                 textContentType="name"
+                isIcon={true}
+                Icon={<UserIcon />}
               />
               <CommonInputText
                 placeholder="Email"
                 onChangeText={value => setUserData({...userData, email: value})}
                 textContentType="emailAddress"
+                isIcon={true}
+                Icon={<EmailIcon />}
               />
               <CommonInputText
                 placeholder="Password"
@@ -154,6 +155,8 @@ const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
                   setUserData({...userData, password: value})
                 }
                 textContentType="password"
+                isIcon={true}
+                Icon={<PassworkLockIcon />}
               />
               <CommonInputText
                 placeholder="Confirm Password"
@@ -161,6 +164,8 @@ const SignUpScreen = ({navigation}: RootStackScreenProps<'SignUpScreen'>) => {
                   setUserData({...userData, cnf_password: value})
                 }
                 textContentType="password"
+                isIcon={true}
+                Icon={<PassworkLockIcon />}
               />
               <CommonButton
                 onPress={signUpHandler}
