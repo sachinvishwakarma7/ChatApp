@@ -90,7 +90,7 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
         </View>
         <View>
           <Text
-            style={[styles.userNameText, {fontWeight: 'bold', fontSize: 16}]}>
+            style={[styles.userNameText, {fontWeight: 'bold'}]}>
             {user.name}
           </Text>
           <Text style={styles.userNameText}>{user.email}</Text>
@@ -132,10 +132,11 @@ const ChatScreen = ({navigation}: ChatsTabScreenProps) => {
       marginHorizontal: 20,
       marginBottom: 10,
       borderRadius: 10,
-      padding: 16,
+      padding: 10,
     },
     userNameText: {
       color: theme.colors.text,
+      fontSize: 16,
     },
   });
 

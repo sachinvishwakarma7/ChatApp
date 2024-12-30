@@ -131,10 +131,9 @@ const HomeScreen = ({navigation}: HomeTabScreenProps) => {
       <FlatList
         data={postData}
         contentContainerStyle={{
-          paddingHorizontal: 2,
           paddingBottom: 100,
         }}
-        style={{paddingHorizontal: 20}}
+        style={{paddingHorizontal: 10}}
         renderItem={({item}) => (
           <View style={styles.postCardContainer}>
             <View style={styles.userDetailView}>
